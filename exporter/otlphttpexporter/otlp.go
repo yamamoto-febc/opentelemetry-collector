@@ -32,6 +32,8 @@ import (
 	"go.opentelemetry.io/collector/pdata/pprofile/pprofileotlp"
 	"go.opentelemetry.io/collector/pdata/ptrace"
 	"go.opentelemetry.io/collector/pdata/ptrace/ptraceotlp"
+
+	sacloudhttp "github.com/sacloud/go-http"
 )
 
 type baseExporter struct {
@@ -86,6 +88,11 @@ func (e *baseExporter) start(ctx context.Context, host component.Host) error {
 	if err != nil {
 		return err
 	}
+
+	client.Transport = &sacloudhttp.TracingRoundTripper{
+		Transport: client.Transport,
+	}
+
 	e.client = client
 	return nil
 }
